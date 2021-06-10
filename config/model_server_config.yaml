@@ -1,0 +1,108 @@
+logger:
+
+  level: INFO 
+
+  path: null
+
+
+grpc:
+
+  ip: 10.120.16.153
+  remote: []
+
+  max_workers: 1
+
+  max_concurrent_rpcs: 1
+
+  max_msg_len: 10
+
+  port: 50052
+
+  test_trials: 2
+
+  test_cooldown: 0.5
+  infer_trials: 1
+  infer_cooldown: 1
+  timeout:
+
+    check: 1
+
+    dense: 2
+    dense_batch: 20
+
+    det: 6 
+
+  restart_cooldown: 60
+  det_model: DBNetOpenVINO
+  recog_model: Dense8OpenVINO
+  
+
+
+model_folder: openvino_models
+
+
+check_model:
+  
+  model_folder: testing_models/FP16
+  
+  model: test
+  
+  data_folder: testing_models/data
+  
+  input:
+    - test_in_fp16_0.npy
+    - test_in_fp16_1.npy
+  
+  ref_output:
+    - test_out_fp16_0.npy
+    - test_out_fp16_1.npy
+  
+  dev: MYRIAD
+  
+  usb_batch_size: 2
+
+
+
+dbnet:
+  model_path:
+
+    portrait: 1344_1024_logits_fp32_MYRIAD
+
+    landscape: 640_992_logits_fp32_MYRIAD
+
+  dev: MYRIAD
+
+  precision: FP32
+
+  usb_batch_size: 1
+
+
+
+dense8:
+
+  model_list:
+    192: crnn192_fp32_MYRIAD
+    1024: crnn1024_fp32_MYRIAD
+    1408: crnn1408_fp32_MYRIAD
+
+  dev: MYRIAD
+
+  usb_batch_size: 6
+
+  precision: FP32
+
+
+docker:
+  image: model_server:2.0
+  detach: true
+  volumes:
+    /home/smapa/Smapa-Terminal-Backend3/config:
+      bind: /app/config
+      mode: rw
+    /dev:
+      bind: /dev
+      mode: rw
+  privileged: true
+  network_mode: host
+  restart_policy:
+    name: unless-stopped

@@ -1,0 +1,49 @@
+# ログ設定
+logger:
+  # ロガーの名前
+  name: scanner
+  # ロガーの閾値
+  level: INFO
+  # ログ保存場所(原則dockerログを使い、別ファイルに保存しない)
+  path: null
+
+# スキャナー設定
+scanner:
+  # ハードウェアスキャナー使用環境変数
+  use_hw: SCANNER
+  data_path: /home/smapa/Smapa-Terminal-Backend3/ori_img
+
+# gRPCサーバ設定
+grpc:
+  # サーバのIP
+  ip: 127.0.0.1
+  # 最大スレッド数(原則1とする)
+  max_workers: 1
+  # 最大並列処理数(原則1とする)
+  max_concurrent_rpcs: 1
+  # ポート
+  port: 50051
+  # 最大待ち時間(秒)
+  timeout: 6
+  # 最大リトライ数
+  max_trials: 2
+  # リトライ間待ち時間
+  cooldown: 2
+
+docker:
+  image: scanner:1.0
+  detach: true
+  volumes:
+    /home/smapa/Smapa-Terminal-Backend3/ori_img:
+      bind: /home/smapa/Smapa-Terminal-Backend3/ori_img
+      mode: rw
+    /home/smapa/Smapa-Terminal-Backend3/config:
+      bind: /app/config
+      mode: rw
+    /dev:
+      bind: /dev
+      mode: rw
+  privileged: true
+  network_mode: host
+  restart_policy:
+    name: unless-stopped

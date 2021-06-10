@@ -1,0 +1,18 @@
+#　スキャンエラー
+
+# 正常
+ok:
+  ErrCode: null
+  ErrMsg: null
+# スキャナーが異常
+scan_err:
+  ErrCode: E101
+  ErrMsg: "Scanner Failed."
+# ローカル画像読込失敗
+read_err:
+  ErrCode: E102
+  ErrMsg: "Cannot read image."
+# スキャン画像保存失敗
+save_err:
+  ErrCode: E103
+  ErrMsg: "Cannot save image."

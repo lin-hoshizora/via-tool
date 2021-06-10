@@ -1,0 +1,11 @@
+# AI推論エラーリスト
+
+# 画像読込失敗
+read_err:
+  ErrCode: E102
+  ErrMsg: "Cannot read image."
+
+# AI計算失敗 
+ocr_err:
+  ErrCode: E201
+  ErrMsg: "OCR failed."

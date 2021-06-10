@@ -1,0 +1,21 @@
+# Websocketサーバエラーリスト
+
+non-text:
+  ErrCode: E001
+  ErrMsg: Non-text recieved
+
+non-json:
+  ErrCode: E002
+  ErrMsg: Cannot decode JSON
+
+invalid-json:
+  ErrCode: E003
+  ErrMsg: Unsupported JSON content
+
+read-err:
+  ErrCode: E102
+  ErrMsg: "Cannot read image."
+
+ocr-err:
+  ErrCode: E201
+  ErrMsg: "OCR failed."

@@ -1,0 +1,132 @@
+# ==========================
+# ログ設定
+# ==========================
+logger:
+  # ロガーの閾値
+  level: INFO 
+  # ログ保存箇所(原則dockerログを使い、別ファイルに保存しない)
+  path: null
+
+# ==========================
+# AI推論サーバ設定
+# ==========================
+grpc:
+  # サーバのIP
+  ip: 127.0.0.1
+  remote: []
+  # 最大スレッド数(アクセラレータの場合、原則1とする)
+  max_workers: 1
+  # 最大並列処理数(アクセラレータの場合、原則1とする)
+  max_concurrent_rpcs: 1
+  # 最大メッセージサイズ
+  max_msg_len: 10
+  # ポート
+  port: 50052
+  # アクセラレータ状態確認最大リトライ数
+  test_trials: 2
+  # アクセラレータ状態確認リトライ間隔(秒)
+  test_cooldown: 0.5
+  infer_trials: 2
+  infer_cooldown: 1
+  timeout:
+    # アクセラレータ動作確認の最大待ち時間
+    check: 1
+    # 文字検出処理の最大待ち時間
+    dense: 2
+    dense_batch: 20
+    # 文字認識処理の最大待ち時間
+    ctpnp: 6 
+  # 自動再起動後初期化時間(この間、AI推論できない)
+  restart_cooldown: 60
+  det_model: DBNetOpenVINO
+  recog_model: Dense8OpenVINO
+  
+
+# ==========================
+# AIモデル設定
+# ==========================
+
+# モデルの保存フォルダー名
+model_folder: openvino_models
+
+# 動作確認用モデル
+check_model:
+  # モデルのフォルダー名
+  model_folder: testing_models/FP16
+  # モデルのファイル名
+  model: test
+  # テストデータのフォルダー名
+  data_folder: testing_models/data
+  # テスト入力のファイル名
+  input:
+    - test_in_fp16_0.npy
+    - test_in_fp16_1.npy
+  # 正しい出力のファイル名
+  ref_output:
+    - test_out_fp16_0.npy
+    - test_out_fp16_1.npy
+  # 動作確認対象デイバイス
+  dev: MYRIAD
+  # USB通信用バッチサイズ(devがMYRIADの時だけ有効)
+  usb_batch_size: 2
+          
+
+# 文字検出モデル
+ctpnp:
+  # モデル名(拡張子抜き)
+  model_path:
+    # A6サイズ用モデル
+    portrait: ctpn-pixel-stack2-v2-1376-1024
+    # カード型用モデル
+    landscape: ctpn-pixel-stack2-v2-608-960
+  # 推論用デバイス CPU/MYRAID/ARM
+  dev: MYRIAD
+  # 計算精度
+  precision: FP32
+  # USB通信用バッチサイズ(devがMYRIADの時だけ有効)
+  usb_batch_size: 1
+
+# 文字検出モデル
+dbnet:
+  model_path:
+    # A6サイズ用モデル
+    portrait: 1344_1024_logits_fp32_MYRIAD
+    # カード型用モデル
+    landscape: 640_992_logits_fp32_MYRIAD
+  # 推論用デバイス CPU/MYRAID/ARM
+  dev: MYRIAD
+  # 計算精度
+  precision: FP32
+  # USB通信用バッチサイズ(devがMYRIADの時だけ有効)
+  usb_batch_size: 1
+
+
+# 文字認識モデル
+dense8:
+  # 使用したいモデルのリスト(拡張子抜き)
+  model_list:
+    192: crnn192_fp32_MYRIAD
+    1024: crnn1024_fp32_MYRIAD
+    1408: crnn1408_fp32_MYRIAD
+  # 推論用デバイス CPU/MYRAID/ARM
+  dev: MYRIAD
+  # USB通信用バッチサイズ
+  usb_batch_size: 6
+  # 計算精度
+  precision: FP32
+
+
+docker:
+  image: model_server:2.0
+  detach: true
+  volumes:
+    /home/smapa/Smapa-Terminal-Backend3/config:
+      bind: /app/config
+      mode: rw
+    /dev:
+      bind: /dev
+      mode: rw
+  privileged: true
+  network_mode: host
+  restart_policy:
+    name: unless-stopped

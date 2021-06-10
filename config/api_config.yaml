@@ -1,0 +1,31 @@
+
+# ログ設定
+logger:
+  # ロガーの名前
+  name: ws_server
+  # ロガーの閾値
+  level: INFO 
+  # ログ保存場所(原則dockerログを使い、別ファイルに保存しない)
+  path: null
+
+# websocketサーバ
+websocket:
+  # websocket戻り値保存箇所
+  data_path: /home/smapa/Smapa-Terminal-Backend3/backend_res
+  # OCR用インターフェース
+  ocr:
+    # OCR用サーバIP
+    ip: 127.0.0.1
+    # OCR用ポート
+    port: 8766
+
+
+#　マイナンバーのレイアウトによって、文字検出の対象エリアを縮小
+sniper_mode: true
+
+# デバッグ用設定
+debug:
+  CTPNP:
+    final_boxes: false
+  Dense:
+    chips: false
